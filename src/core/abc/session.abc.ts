@@ -33,7 +33,7 @@ import { ProxyConfig, SessionConfig } from '../../structures/sessions.dto';
 import { NotImplementedByEngineError } from '../exceptions';
 import { LocalSessionStorage, MediaStorage } from './storage.abc';
 
-const CHROME_PATH = '/usr/bin/google-chrome-stable';
+const CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const CHROMIUM_PATH = '/usr/bin/chromium';
 
 export function getBrowserExecutablePath() {

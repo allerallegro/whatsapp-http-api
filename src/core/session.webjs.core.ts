@@ -86,7 +86,7 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
   async start() {
     this.whatsapp = this.buildClient();
 
-    this.whatsapp.initialize().catch((error) => {
+    this.whatsapp.initialize(this.sessionConfig.phone).catch((error) => {
       this.status = WAHASessionStatus.FAILED;
       this.log.error(error);
       return;
@@ -101,6 +101,11 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
     this.whatsapp.on(Events.AUTHENTICATED, () => {
       this.status = WAHASessionStatus.WORKING;
       this.log.log(`Session '${this.name}' has been authenticated!`);
+    });
+
+    this.whatsapp.on(Events.DISCONNECTED, () => {
+      this.status = WAHASessionStatus.DISCONNECTED;
+      this.log.log(`Session '${this.name}' has been disconected!`);
     });
     this.events.emit(WAHAInternalEvent.engine_start);
     return this;

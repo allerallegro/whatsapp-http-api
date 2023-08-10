@@ -73,7 +73,9 @@ export class SessionStorageCore extends LocalSessionStorage {
 
   getFolderPath(name: string): string {
     const suffix = crypto.createHash('md5').update(name).digest('hex');
-    return path.join(this.engineFolder, `${name}-${suffix}`);
+    let pt = path.join(this.engineFolder, `${name}-${suffix}`)
+    fs.mkdir(pt, { recursive: true });
+    return pt;
   }
 
   async clean(sessionName: string) {

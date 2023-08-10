@@ -83,9 +83,9 @@ export class SessionManagerCore extends SessionManager {
   }
 
   private onlyDefault(name: string) {
-    if (name !== this.DEFAULT) {
-      throw new OnlyDefaultSessionIsAllowed();
-    }
+    // if (name !== this.DEFAULT) {
+    //   throw new OnlyDefaultSessionIsAllowed();
+    // }
   }
 
   async onApplicationShutdown(signal?: string) {

@@ -10,7 +10,7 @@ export class WhatsappConfigService {
   public files_uri = '/api/files';
   public schema = 'http';
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   get filesURL(): string {
     return `${this.schema}://${this.hostname}:${this.port}${this.files_uri}/`;
@@ -126,7 +126,7 @@ export class WhatsappConfigService {
     if (!user && !password) {
       console.log(
         'Please set up both WHATSAPP_SWAGGER_USERNAME and WHATSAPP_SWAGGER_PASSWORD ' +
-          'to enable swagger authentication.',
+        'to enable swagger authentication.',
       );
       return undefined;
     }

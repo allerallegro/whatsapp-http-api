@@ -16,6 +16,7 @@ export enum WAHASessionStatus {
   SCAN_QR_CODE = 'SCAN_QR_CODE',
   WORKING = 'WORKING',
   FAILED = 'FAILED',
+  DISCONNECTED = 'DISCONNECTED',
 }
 
 export enum WAHAEngine {

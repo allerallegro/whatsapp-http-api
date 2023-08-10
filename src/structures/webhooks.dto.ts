@@ -38,7 +38,7 @@ export class WebhookConfig {
   url: string;
 
   @ApiProperty({
-    example: ['message'],
+    example: ['message', 'message.ack'],
     required: true,
   })
   events: string[];

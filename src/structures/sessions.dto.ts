@@ -40,6 +40,10 @@ export class SessionConfig {
     example: null,
   })
   proxy?: ProxyConfig;
+  @ApiProperty({
+    example: '11999990000',
+  })
+  phone: string;
 }
 
 export class SessionStartRequest {
