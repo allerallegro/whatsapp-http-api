@@ -44,6 +44,12 @@ export class WebhookConfig {
   events: string[];
 
   @ApiProperty({
+    example: ['DISCONNECTED', 'STOPPED', 'STARTING', 'FAILED', 'CODE_RECEIVED', 'WORKING'],
+    required: true,
+  })
+  eventsStatus: string[];
+
+  @ApiProperty({
     example: null,
   })
   hmac?: HmacConfiguration;

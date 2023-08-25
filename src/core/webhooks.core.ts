@@ -1,6 +1,6 @@
 import { ConsoleLogger } from '@nestjs/common';
 
-import { WAHAEvents } from '../structures/enums.dto';
+import { WAHAEvents, WAHASessionStatus } from '../structures/enums.dto';
 import { WAWebhook } from '../structures/responses.dto';
 import { WebhookConfig } from '../structures/webhooks.dto';
 import { WhatsappSession } from './abc/session.abc';
@@ -55,6 +55,28 @@ export class WebhookConductorCore implements WebhookConductor {
     return rightEvents;
   }
 
+  private getSuitableStatus(events: WAHASessionStatus[] | string[]): WAHASessionStatus[] {
+    const allEvents = Object.values(WAHASessionStatus);
+
+    // Enable all events if * in the events
+    // @ts-ignore
+    if (events.includes('*')) {
+      return allEvents;
+    }
+
+    // Get only known events, log and ignore others
+    const rightEvents = [];
+    for (const event of events) {
+      // @ts-ignore
+      if (!allEvents.includes(event)) {
+        this.log.error(`Unknown event for webhook: '${event}'`);
+        continue;
+      }
+      rightEvents.push(event);
+    }
+    return rightEvents;
+  }
+
   public configure(session: WhatsappSession, webhooks: WebhookConfig[]) {
     for (const webhookConfig of webhooks) {
       this.configureSingleWebhook(session, webhookConfig);
@@ -87,6 +109,23 @@ export class WebhookConductorCore implements WebhookConductor {
       }
       this.log.log(`Event '${event}' is enabled for url: ${url}`);
     }
+    //Status Events
+    const eventsStatus = this.getSuitableStatus(webhook.eventsStatus);
+
+    for (const event of eventsStatus) {
+      try {
+        session.subscribeStatus(event, (data: any) =>
+          this.callWebhook(event, session, data, sender),
+        );
+      } catch (error) {
+        if (error instanceof NotImplementedByEngineError) {
+          this.log.error(error);
+        } else {
+          throw error;
+        }
+      }
+      this.log.log(`Event '${event}' is enabled for url: ${url}`);
+    }
     this.log.log(`Webhooks were configured for ${url}.`);
   }
 
@@ -96,6 +135,9 @@ export class WebhookConductorCore implements WebhookConductor {
     data: any,
     sender: WebhookSender,
   ) {
+    if (typeof data === "string") {
+      data = { text: data }
+    }
     const json: WAWebhook = {
       event: event,
       session: session.name,

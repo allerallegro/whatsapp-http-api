@@ -116,6 +116,10 @@ export class WhatsappSessionVenomCore extends WhatsappSession {
     }
   }
 
+  subscribeStatus(event: WAHAEvents | string, handler: (message) => void) {
+    return;
+  }
+
   /**
    * START - Methods for API
    */
@@ -131,6 +135,14 @@ export class WhatsappSessionVenomCore extends WhatsappSession {
     } else {
       throw new UnprocessableEntityException(`Unknown status - ${this.status}`);
     }
+  }
+
+  /**
+ * 
+ * @returns whatsappcode:string
+ */
+  getWhatsappAuthCode(): string {
+    throw new NotImplementedByEngineError();
   }
 
   async checkNumberStatus(

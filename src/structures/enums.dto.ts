@@ -17,6 +17,7 @@ export enum WAHASessionStatus {
   WORKING = 'WORKING',
   FAILED = 'FAILED',
   DISCONNECTED = 'DISCONNECTED',
+  CODE_RECEIVED = 'CODE_RECEIVED'
 }
 
 export enum WAHAEngine {

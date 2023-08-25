@@ -3,6 +3,7 @@ services:
   whatsapp-http-api:
     # image: devlikeapro/whatsapp-http-api
     image: registry.kubernetes.partner1.com.br/whatsapp-http-api
+    platform: linux/amd64
     # build:
     #   context: .
     container_name: whatsapp-http-api

@@ -61,6 +61,7 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
         executablePath: this.getBrowserExecutablePath(),
         args: this.getBrowserArgsForPuppeteer(),
       },
+      authTimeoutMs: 120 * 1000
     };
     this.addProxyConfig(clientOptions);
     return new Client(clientOptions);
@@ -98,6 +99,10 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
       this.status = WAHASessionStatus.SCAN_QR_CODE;
     });
 
+    this.whatsapp.on(Events.CODE_RECEIVED, (code) => {
+      this.status = WAHASessionStatus.CODE_RECEIVED;
+    });
+
     this.whatsapp.on(Events.AUTHENTICATED, () => {
       this.status = WAHASessionStatus.WORKING;
       this.log.log(`Session '${this.name}' has been authenticated!`);
@@ -125,6 +130,15 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
       );
     }
     return await this.whatsapp.pupPage.screenshot();
+  }
+
+
+  /**
+   * 
+   * @returns whatsappcode:string
+   */
+  getWhatsappAuthCode(): string {
+    return this.whatsapp.getWhatsappAuthCode();
   }
 
   async checkNumberStatus(
@@ -401,6 +415,18 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
       );
     }
   }
+
+  subscribeStatus(event, handler) {
+    if (event === WAHASessionStatus.DISCONNECTED) {
+      this.whatsapp.on(Events.DISCONNECTED, handler);
+    } else if (event === WAHASessionStatus.STOPPED) {
+      this.whatsapp.on(Events.DISCONNECTED, handler);
+    } else if (event === WAHASessionStatus.CODE_RECEIVED) {
+      this.whatsapp.on(Events.CODE_RECEIVED, handler);
+    } else if (event === WAHASessionStatus.WORKING) {
+      this.whatsapp.on(Events.AUTHENTICATED, handler);
+    }
+  };
 
   private processIncomingMessage(message: Message) {
     return this.downloadMedia(message).then(this.toWAMessage);

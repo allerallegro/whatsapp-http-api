@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { UnprocessableEntityException } from '@nestjs/common/exceptions/unprocessable-entity.exception';
+import { Body, Controller, Get, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
-
+import { Response } from 'express';
 import { SessionManager } from '../core/abc/manager.abc';
 import { parseBool } from '../helpers';
+import { SessionQuery } from '../structures/base.dto';
 import {
   ListSessionsQuery,
   SessionDTO,
@@ -16,7 +16,7 @@ import {
 @Controller('api/sessions')
 @ApiTags('sessions')
 export class SessionsController {
-  constructor(private manager: SessionManager) {}
+  constructor(private manager: SessionManager) { }
 
   @Post('/start/')
   async start(@Body() request: SessionStartRequest): Promise<SessionDTO> {
@@ -48,5 +48,14 @@ export class SessionsController {
   async list(@Query() query: ListSessionsQuery): Promise<SessionDTO[]> {
     const all = parseBool(query.all);
     return this.manager.getSessions(all);
+  }
+
+  @Get('/whatsapp-code')
+  @ApiOperation({ summary: 'Get WhatsappAuthCode.' })
+  whatsappCode(@Res() res: Response, @Query() sessionQuery: SessionQuery): void {
+    const whatsappService = this.manager.getSession(sessionQuery.session);
+    const code = whatsappService.getWhatsappAuthCode();
+    res.status(HttpStatus.OK).send(code);
+
   }
 }

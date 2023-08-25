@@ -84,10 +84,11 @@ export class WhatsappConfigService {
   getWebhookConfig(): WebhookConfig | undefined {
     const url = this.getWebhookUrl();
     const events = this.getWebhookEvents();
+    const eventsStatus = this.getWebhookStatusEvents();
     if (!url || events.length === 0) {
       return undefined;
     }
-    return { url: url, events: events };
+    return { url: url, events: events, eventsStatus: eventsStatus };
   }
 
   private getWebhookUrl(): string | undefined {
@@ -96,6 +97,11 @@ export class WhatsappConfigService {
 
   private getWebhookEvents(): string[] {
     const value = this.get('WHATSAPP_HOOK_EVENTS', '');
+    return value ? value.split(',') : [];
+  }
+
+  private getWebhookStatusEvents(): string[] {
+    const value = this.get('WHATSAPP_STATUS_EVENTS', '');
     return value ? value.split(',') : [];
   }
 

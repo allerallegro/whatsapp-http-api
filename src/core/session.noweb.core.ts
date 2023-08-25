@@ -4,8 +4,8 @@ import makeWASocket, {
   makeInMemoryStore,
   PresenceData,
   useMultiFileAuthState,
+  WABrowserDescription,
 } from '@adiwajshing/baileys';
-import { WABrowserDescription } from '@adiwajshing/baileys';
 import { UnprocessableEntityException } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import { Agent } from 'https';
@@ -201,6 +201,14 @@ export class WhatsappSessionNoWebCore extends WhatsappSession {
     } else {
       throw new UnprocessableEntityException(`Unknown status - ${this.status}`);
     }
+  }
+
+  /**
+ * 
+ * @returns whatsappcode:string
+ */
+  getWhatsappAuthCode(): string {
+    throw new NotImplementedByEngineError();
   }
 
   async checkNumberStatus(
@@ -466,6 +474,10 @@ export class WhatsappSessionNoWebCore extends WhatsappSession {
         `Engine does not support webhook event: ${event}`,
       );
     }
+  }
+
+  subscribeStatus(event: WAHAEvents | string, handler: (message) => void) {
+    return;
   }
 
   private handleIncomingMessages(messages, handler, includeFromMe) {
