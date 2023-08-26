@@ -1,7 +1,7 @@
 #
 # Build
 #
-FROM --platform=linux/amd64 node:18-buster-slim AS build
+FROM --platform=linux/amd64 node:20-bullseye-slim AS build
 ENV PUPPETEER_SKIP_DOWNLOAD=True
 
 # npm packages
@@ -22,7 +22,7 @@ RUN yarn build && find ./dist -name "*.d.ts" -delete
 #
 # Final
 #
-FROM --platform=linux/amd64 node:18-buster-slim AS release
+FROM --platform=linux/amd64 node:20-bullseye-slim AS release
 ENV PUPPETEER_SKIP_DOWNLOAD=True
 # ARG USE_BROWSER=chromium
 ARG USE_BROWSER=chrome
@@ -63,7 +63,6 @@ COPY tsconfig.json ./
 
 # Run command, etc
 EXPOSE 3000
-EXPOSE 9229
-CMD yarn start:debug
+CMD yarn start:prd
 # CMD ["node", "--inspect=0.0.0.0:9229", "node_modules/@nestjs/cli/bin/nest.js", "start", "--watch"]
 
